@@ -1,0 +1,9 @@
+version: "2"
+
+services:
+  http_server:
+    build: ./
+    ports:
+      - 8080:80
+    env_file:
+      - env.env
