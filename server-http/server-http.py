@@ -73,9 +73,8 @@ class MyHTTPServer:
                 resp, net = self.handle_request(req, addr, seconds)
             except ValueError as e:
                 print("Cannot handle request:", e)
-            else:
-                self.send_response(conn, resp, seconds, net)
-                conn.close()
+            self.send_response(conn, resp, seconds, net)
+            conn.close()
         except ConnectionError as e:
             print("Connections Erorr:", e)
 
@@ -127,7 +126,7 @@ class MyHTTPServer:
     def handle_request(self, req, addr, seconds):
         ip = req._headers["X-Forwarded-For"]
         if ip is None:
-            raise ValueError("No ip found")
+            return (Response(400, "Bad Request"), None)
         net = str(ipaddress.IPv4Interface(ip+"/"+str(self._mask)).network)
         self.add_log(net, seconds)
         code, message = self.check_limit(net, seconds)
